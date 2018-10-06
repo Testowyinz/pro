@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('bundles/fullcalendar/css/fullcalendar/fullcalendar.min.css') }}" />
+    {% endblock %}
+
+    {% block javascripts %}
+        <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/moment.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/fullcalendar.min.js') }}"></script>
+
+        {# <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/locale-all.js') }}"></script> #}
+
+        <script type="text/javascript">
+            $(function () {
+                $('#calendar-holder').fullCalendar({
+                    header: {
+                        left: 'prev, next, today',
+                        center: 'title',
+                        right: 'month, agendaWeek, agendaDay, list'
+                    },
+                    selectable:true,
+                    selectHelper:true,
+
+                    lazyFetching: true,
+                    navLinks: true,
+                    eventSources: [
+                        {
+                            url: '/fc-load-events',
+                            type: 'POST',
+                            data: {
+                                filters: {}
+                            },
+                            error: function () {
+                                alert('There was an error while fetching FullCalendar!');
+                            }
+                        }
+                    ]
+                });
+            });
+        </script>
+    {% endblock %}
+    <h2 class="page-header"></h2>
+    {% if app.user %}
+        Zalogowano {{ id }};
+
+            {% include '@FullCalendar/Calendar/calendar.html.twig' %}
+    {% else %}
+        <p><a href="{{path('fos_user_security_login')}}">Zaloguj się</a> lub <a href="{{path('fos_user_registration_register')}}">Zarejestruj 	się</a> aby zobaczyć swój kalendarz</p>
+    {% endif %}
+{% endblock %}
