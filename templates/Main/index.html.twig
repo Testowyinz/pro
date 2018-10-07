@@ -1,6 +1,4 @@
 {% extends 'base.html.twig' %}
-
-
 {% block body %}
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('bundles/fullcalendar/css/fullcalendar/fullcalendar.min.css') }}" />
@@ -11,7 +9,7 @@
         <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/moment.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/fullcalendar.min.js') }}"></script>
 
-        {# <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/locale-all.js') }}"></script> #}
+         <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/locale-all.js') }}"></script>
 
         <script type="text/javascript">
             $(function () {
@@ -28,7 +26,7 @@
                     navLinks: true,
                     eventSources: [
                         {
-                            url: '/fc-load-events',
+                            url: "{{ path('fullcalendar_load_events') }}",
                             type: 'POST',
                             data: {
                                 filters: {}
@@ -45,6 +43,7 @@
     <h2 class="page-header"></h2>
     {% if app.user %}
         Zalogowano {{ id }};
+        <a href="{{ path('booking_new') }}">Create new booking</a>
 
             {% include '@FullCalendar/Calendar/calendar.html.twig' %}
     {% else %}
