@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Entity\Booking;
+use App\Entity\Events;
 use Doctrine\ORM\EntityManagerInterface;
 use Toiba\FullCalendarBundle\Entity\Event;
 use Toiba\FullCalendarBundle\Event\CalendarEvent;
@@ -27,26 +27,29 @@ class FullCalendarListener
 
     public function loadEvents(CalendarEvent $calendar)
     {
+        //$iduser = $this->container->get('security.token_storage')->getToken()->getUser()->getId();
         $startDate = $calendar->getStart();
         $endDate = $calendar->getEnd();
         $filters = $calendar->getFilters();
 
         // Modify the query to fit to your entity and needs
         // Change b.beginAt by your start date in your custom entity
-        $bookings = $this->em->getRepository(Booking::class)
+       // $events = $this->em->getRepository(Events::class)->findBy(['id' => 1],['id' => 'desc']);
+        $events = $this->em->getRepository(Events::class)
             ->createQueryBuilder('b')
+            ->Where('b.idUser = 2')
             ->andWhere('b.beginAt BETWEEN :startDate and :endDate')
             ->setParameter('startDate', $startDate->format('Y-m-d H:i:s'))
             ->setParameter('endDate', $endDate->format('Y-m-d H:i:s'))
             ->getQuery()->getResult();
 
-        foreach($bookings as $booking) {
+        foreach($events as $event) {
 
             // this create the events with your own entity (here booking entity) to po
-            $bookingEvent = new Event(
-                $booking->getTitle(),
-                $booking->getBeginAt(),
-                $booking->getEndAt() // If the end date is null or not defined, it creates a all day event
+            $eventsEvent = new Event(
+                $event->getTitle(),
+                $event->getBeginAt(),
+                $event->getEndAt() // If the end date is null or not defined, it creates a all day event
             );
 
             /*
@@ -58,14 +61,14 @@ class FullCalendarListener
             // $bookingEvent->setUrl('http://www.google.com');
             // $bookingEvent->setBackgroundColor($booking->getColor());
             // $bookingEvent->setCustomField('borderColor', $booking->getColor());
-            $bookingEvent->setUrl(
-                $this->router->generate('booking_show', array(
-                    'id' => $booking->getId(),
+            $eventsEvent->setUrl(
+                $this->router->generate('events_show', array(
+                    'id' => $event->getId(),
                 ))
             );
 
             // finally, add the booking to the CalendarEvent for displaying on the calendar
-            $calendar->addEvent($bookingEvent);
+            $calendar->addEvent($eventsEvent);
         }
     }
 }

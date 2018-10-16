@@ -43,7 +43,7 @@
     <h2 class="page-header"></h2>
     {% if app.user %}
         Zalogowano {{ id }};
-        <a href="{{ path('booking_new') }}">Create new booking</a>
+        <button><a href="{{ path('events_index') }}">Create new Event</a></button>
 
             {% include '@FullCalendar/Calendar/calendar.html.twig' %}
     {% else %}
